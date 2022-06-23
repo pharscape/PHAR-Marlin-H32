@@ -97,9 +97,9 @@ using namespace std;
 
 #define MACHINE_SIZE STRINGIFY(X_BED_SIZE) "x" STRINGIFY(Y_BED_SIZE) "x" STRINGIFY(Z_MAX_POS)
 
-#define CORP_WEBSITE_E "github.com/alexqzd"
+#define CORP_WEBSITE_E "github.com/pharscape/PHAR-Marlin-H32"
 
-#define BUILD_NUMBER "1.3.6 Beta 2"
+#define BUILD_NUMBER "0.1"
 
 #define DWIN_FONT_MENU font8x16
 #define DWIN_FONT_STAT font10x20

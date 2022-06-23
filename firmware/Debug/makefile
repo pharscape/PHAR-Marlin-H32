@@ -146,17 +146,6 @@ endif
 
 -include ../makefile.defs
 
-OPTIONAL_TOOL_DEPS := \
-$(wildcard ../makefile.defs) \
-$(wildcard ../makefile.init) \
-$(wildcard ../makefile.targets) \
-
-
-BUILD_ARTIFACT_NAME := firmware
-BUILD_ARTIFACT_EXTENSION := elf
-BUILD_ARTIFACT_PREFIX :=
-BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
-
 # Add inputs and outputs from these tool invocations to the build variables 
 SECONDARY_FLASH += \
 firmware.bin \
@@ -166,26 +155,23 @@ firmware.siz \
 
 
 # All Target
-all: main-build
-
-# Main-build Target
-main-build: firmware.elf secondary-outputs
+all: firmware.elf secondary-outputs
 
 # Tool invocations
-firmware.elf: $(OBJS) $(USER_OBJS) makefile objects.mk $(OPTIONAL_TOOL_DEPS)
+firmware.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GNU Arm Cross C++ Linker'
-	arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mthumb-interwork -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -Wall  -g3 -T "../Sources/main/hdsc32core/hc32f46x_flash.ld" -Xlinker --gc-sections -L"../Sources" -L"../Sources/main/hdsc32core/common" -Wl,-Map,"firmware.map" --specs=nano.specs --specs=nosys.specs -o "firmware.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mthumb-interwork -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -Wall  -g3 -T "/home/paul/git/PHAR-Marlin-H32/firmware/Sources/main/hdsc32core/hc32f46x_flash.ld" -Xlinker --gc-sections -L"/home/paul/git/PHAR-Marlin-H32/firmware/Sources" -L"/home/paul/git/PHAR-Marlin-H32/firmware/Sources/main/hdsc32core/common" -Wl,-Map,"firmware.map" --specs=nano.specs --specs=nosys.specs -o "firmware.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-firmware.bin: firmware.elf makefile objects.mk $(OPTIONAL_TOOL_DEPS)
+firmware.bin: firmware.elf
 	@echo 'Invoking: GNU Arm Cross Create Flash Image'
 	arm-none-eabi-objcopy -O binary "firmware.elf"  "firmware.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-firmware.siz: firmware.elf makefile objects.mk $(OPTIONAL_TOOL_DEPS)
+firmware.siz: firmware.elf
 	@echo 'Invoking: GNU Arm Cross Print Size'
 	arm-none-eabi-size --format=berkeley "firmware.elf"
 	@echo 'Finished building: $@'
@@ -198,6 +184,6 @@ clean:
 
 secondary-outputs: $(SECONDARY_FLASH) $(SECONDARY_SIZE)
 
-.PHONY: all clean dependents main-build
+.PHONY: all clean dependents
 
 -include ../makefile.targets
